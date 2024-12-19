@@ -1,2 +1,2 @@
 # prophet_ts_ensemble
-Time-series forecasting with a Prophet ensemble.
+Improved time-series forecasting with a Prophet ensemble.
