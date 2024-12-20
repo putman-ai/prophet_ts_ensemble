@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def plot_ensemble_forecast_with_distribution(
+def plot_forecast(
     historical_df: pd.DataFrame,
     ensemble_forecast: pd.DataFrame,
     individual_forecasts: pd.DataFrame,
@@ -11,14 +11,15 @@ def plot_ensemble_forecast_with_distribution(
     plot_start_date: pd.Timestamp = None,
 ):
     """
-    Create interactive visualization of the ensemble forecast with min and max of the forecast distribution
-    plotted as a secondary band on the primary plot.
+    Create interactive visualization of the ensemble forecast
+    with min and max of the forecast distribution plotted 
+    as a secondary band on the primary plot.
     """
     fig = make_subplots(
         rows=1,
         cols=1,
         subplot_titles=(
-            f"{title} - Ensemble Forecast",
+            f"{title} Forecast",
         ),
     )
 
@@ -31,23 +32,13 @@ def plot_ensemble_forecast_with_distribution(
     # Set index for alignment
     ensemble_forecast.set_index('ds', inplace=True)
 
-    # Historical data
-    fig.add_trace(
-        go.Scatter(
-            x=historical_df['ds'],
-            y=historical_df['y'],
-            name='Historical',
-            line=dict(color='black')
-        ),
-    )
-
     # Ensemble forecast
     fig.add_trace(
         go.Scatter(
             x=ensemble_forecast.index,
             y=ensemble_forecast['yhat'],
-            name='Ensemble Forecast',
-            line=dict(color='blue')
+            name=' Forecast',
+            line=dict(color='blue', width=1)
         ),
     )
 
@@ -58,7 +49,7 @@ def plot_ensemble_forecast_with_distribution(
             y=ensemble_forecast['yhat_upper'],
             fill=None,
             mode='lines',
-            line_color='rgba(0,100,255,0.2)',
+            line_color='rgba(0,100,255,0.5)',
             name='Upper Bound'
         ),
     )
@@ -69,10 +60,12 @@ def plot_ensemble_forecast_with_distribution(
             y=ensemble_forecast['yhat_lower'],
             fill='tonexty',
             mode='lines',
-            line_color='rgba(0,100,255,0.2)',
+            line_color='rgba(0,100,255,0.5)',
             name='Lower Bound'
         ),
     )
+
+
 
     # Min and Max of the individual forecast distribution
     forecast_distribution = individual_forecasts.pivot(
@@ -94,7 +87,7 @@ def plot_ensemble_forecast_with_distribution(
             x=forecast_min.index,
             y=forecast_min.values,
             mode='lines',
-            line=dict(color='rgba(255,165,0,0.5)', dash='dot'),
+            line=dict(color='rgba(255,165,0,1)', dash='dot'),
             name='Min Forecast'
         ),
     )
@@ -104,8 +97,18 @@ def plot_ensemble_forecast_with_distribution(
             x=forecast_max.index,
             y=forecast_max.values,
             mode='lines',
-            line=dict(color='rgba(255,165,0,0.5)', dash='dot'),
+            line=dict(color='rgba(255,165,0,1)', dash='dot'),
             name='Max Forecast'
+        ),
+    )
+
+    # Historical data
+    fig.add_trace(
+        go.Scatter(
+            x=historical_df['ds'],
+            y=historical_df['y'],
+            name='Historical',
+            line=dict(color='black', width=0.5)
         ),
     )
 

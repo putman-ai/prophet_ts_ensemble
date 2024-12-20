@@ -1,11 +1,25 @@
+#!/usr/bin/env python3
+"""
+HRP Portfolio Optimizer
+Author: John P.
+Date: 12/18/2024
+"""
+
+# System imports
+import warnings
+warnings.filterwarnings('ignore')
+
+# Third-party imports
 import pandas as pd
 import yfinance as yf
+
+# Local imports
 from src.forecast import ProphetEnsemble
-from src.visualization import plot_ensemble_forecast_with_distribution
+from src.visualization import plot_forecast
 
 if __name__ == "__main__":
     # Fetch SPY data
-    ticker = "SPY"
+    ticker = "NMR-USD"
     end_date = pd.Timestamp.today()
     start_date = end_date - pd.DateOffset(years=10)  # Fetch 10 years of data
     
@@ -37,11 +51,11 @@ if __name__ == "__main__":
     plot_start_date = end_date - pd.DateOffset(years=5)
     
     # Create and display visualization
-    fig = plot_ensemble_forecast_with_distribution(
+    fig = plot_forecast(
         historical_df=df, 
         ensemble_forecast=forecast, 
         individual_forecasts=individual_forecasts, 
-        title=f"{ticker} Price Forecast",
+        title=f"{ticker}",
         plot_start_date=plot_start_date
     )
     fig.show()
